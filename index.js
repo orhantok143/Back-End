@@ -33,7 +33,7 @@ app.use("/api/v1/product", productRouter)
 app.use("/api/v1/category", categoryRouter)
 app.use("/", (req, res) => {
     res.json({
-        "message": "yayındayım"
+        message: "yayındayım"
     })
 })
 
