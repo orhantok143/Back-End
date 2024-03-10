@@ -5,9 +5,9 @@ const validateMongoDBid = require("../utils/validateMongodbİd")
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
-    cloud_name: 'dk1wnlfex',
-    api_key: '482528185259538',
-    api_secret: 'KpKt4pj7An8EP8buD5NRROdO18A'
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
 });
 
 const createProduct = asyncHandler(async (req, res) => {
