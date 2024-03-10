@@ -1,6 +1,5 @@
 const mongoose = require("mongoose"); // Erase if already required
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
 
 // Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema(
@@ -63,15 +62,7 @@ userSchema.methods.isPasswordMatched = async function (enteredPassword) {
 
 
 
-userSchema.methods.createPasswordResetToken = async function () {
-    const resettoken = crypto.randomBytes(32).toString("hex");
-    this.passwordResetToken = crypto
-        .createHash("sha256")
-        .update(resettoken)
-        .digest("hex");
-    this.passwordResetExpaire = Date.now() + 30 * 60 * 1000;
-    return resettoken
-};
+
 
 //Export the model
 module.exports = mongoose.model("User", userSchema);
