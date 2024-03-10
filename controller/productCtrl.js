@@ -17,7 +17,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
     try {
         // Cloudinary'ye resmi yükle
-        const result = await cloudinary.uploader.upload(image, { folder: 'product-images', width: 200, height: 300, gravity: "auto", crop: "fill" });
+        const result = await cloudinary.uploader.upload(image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
 
         // MongoDB'ye ürünü kaydet
         const newProduct = await productSchema.create({
