@@ -7,9 +7,7 @@ const dotenv = require("dotenv").config()
 const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser")
 const morgan = require("morgan")
-const blogRouter = require("./routers/blogRouters")
 const categoryRouter = require("./routers/prodCategoryRouters")
-const blogCategoryRouter = require("./routers/blogCategoryRouters")
 const cors = require("cors")
 const app = express()
 
@@ -29,7 +27,6 @@ app.use(cookieParser())
 //Routes
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/product", productRouter)
-// app.use("/api/v1/blog", blogRouter)
 app.use("/api/v1/category", categoryRouter)
 
 
