@@ -9,7 +9,6 @@ const bodyParser = require("body-parser")
 const morgan = require("morgan")
 const categoryRouter = require("./routers/prodCategoryRouters")
 const cors = require("cors")
-// const { newCors } = require("./middlewares/authMiddleware")
 const app = express()
 
 //PORT
@@ -17,7 +16,7 @@ const PORT = process.env.PORT || 4000
 
 // DB connection
 connection()
-// Enable CORS for specific origins (replace with your actual domain names)
+// Enable CORS for specific origins(replace with your actual domain names)
 const allowedOrigins = ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app'];
 app.use(cors({
     origin: function (origin, callback) {
@@ -30,6 +29,14 @@ app.use(cors({
     }
 }));
 
+
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://flamingodb.netlify.app');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//     res.setHeader('Access-Control-Allow-Credentials', true); // Added line
+//     next();
+// });
 
 app.use(morgan("dev"))
 app.use(bodyParser.json({ limit: '100mb' }));
