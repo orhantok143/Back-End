@@ -18,7 +18,7 @@ const { authMiddleware, isAdmin, newCors } = require("../middlewares/authMiddlew
 const userRouter = express.Router()
 
 userRouter.post("/register", register)
-userRouter.post("/login", newCors, login)
+userRouter.post("/login", login)
 userRouter.get("/logout", logout)
 userRouter.get("/get-all-users", getAllUser)
 userRouter.get("/get-user/:_id", getaUser)

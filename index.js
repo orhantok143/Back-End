@@ -9,6 +9,7 @@ const bodyParser = require("body-parser")
 const morgan = require("morgan")
 const categoryRouter = require("./routers/prodCategoryRouters")
 const cors = require("cors")
+const { newCors } = require("./middlewares/authMiddleware")
 const app = express()
 
 //PORT
@@ -18,7 +19,12 @@ const PORT = process.env.PORT || 4000
 connection()
 
 //middlewares
-app.use(cors())
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://flamingodb.netlify.app');
+    next();
+});
+
+
 app.use(morgan("dev"))
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ extended: false }))
