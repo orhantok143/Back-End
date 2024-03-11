@@ -20,11 +20,11 @@ connection()
 
 //middlewares
 // Assuming Node.js with Express
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Add this line
-    next();
-});
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Add this line
+//     next();
+// });
 
 
 app.use(morgan("dev"))
