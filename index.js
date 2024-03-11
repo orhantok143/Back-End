@@ -8,8 +8,8 @@ const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser")
 const morgan = require("morgan")
 const categoryRouter = require("./routers/prodCategoryRouters")
-const cors = require("cors")
-const { newCors } = require("./middlewares/authMiddleware")
+// const cors = require("cors")
+// const { newCors } = require("./middlewares/authMiddleware")
 const app = express()
 
 //PORT
@@ -20,7 +20,7 @@ connection()
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://flamingodb.netlify.app, https://flamingo-mn.netlify.app');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST,PUT,DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
