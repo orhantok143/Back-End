@@ -42,7 +42,7 @@ connection()
 
 
 app.use(cors({ // CORS middleware konfigürasyonu
-    origin: 'https://flamingodb.netlify.app', // Alan adınızı değiştirin
+    origin: ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app'], // Alan adınızı değiştirin
     credentials: true // Gerekirse ekleyin
 }));
 
