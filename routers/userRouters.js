@@ -13,7 +13,7 @@ const {
   forgetPasswordToken,
   resetPassword,
 } = require("../controller/userCtrl")
-const { authMiddleware, isAdmin, newCors } = require("../middlewares/authMiddleware")
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware")
 
 const userRouter = express.Router()
 

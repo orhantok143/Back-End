@@ -23,8 +23,7 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+
 
   const { email, password } = req.body;
   // check if user exists or not
