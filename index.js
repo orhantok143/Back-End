@@ -41,13 +41,25 @@ connection()
 // });
 
 
-app.use(cors({ // CORS middleware konfigürasyonu
-    origin: ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app', 'http://localhost:3000/'], // Alan adınızı değiştirin
-    credentials: true // Gerekirse ekleyin
-}));
+// app.use(cors({ // CORS middleware konfigürasyonu
+//     origin: ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app', 'http://localhost:3000/'], // Alan adınızı değiştirin
+//     credentials: true // Gerekirse ekleyin
+// }));
 
 
+const corsOptions = {
+    origin: [  // İzin verilen origin'leri listeleyin
+        'https://flamingodb.netlify.app',
+        'https://flamingo-mn.netlify.app',
+        'http://localhost:3000'
+    ],
+    credentials: true, // Kimlik bilgileri içeren isteklere izin ver
+    allowedHeaders: ['Content-Type', 'Authorization'], // İzin verilen istek başlıkları
+    exposedHeaders: ['X-Total-Count'], // Açıklanacak yanıt başlıkları
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // İzin verilen HTTP methodları
+};
 
+app.use(cors(corsOptions));
 
 
 
