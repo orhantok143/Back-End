@@ -41,10 +41,31 @@ const createProduct = asyncHandler(async (req, res) => {
 })
 
 const updatedProduct = asyncHandler(async (req, res) => {
+    const { title, category, subCategory, description, price } = req.body;
     const { _id } = req.params
     validateMongoDBid(_id)
+    // console.log(req.body.image);
 
-    const product = await productSchema.findByIdAndUpdate(_id, req.body, { new: true })
+
+    const p = await productSchema.findOne({ _id })
+
+    await cloudinary.uploader.destroy(p.image.public_id);
+
+    const result = await cloudinary.uploader.upload(req.body.image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
+
+    // MongoDB'ye ürünü kaydet
+    const newProduct = {
+        title,
+        category,
+        subCategory,
+        description,
+        price,
+        image: result
+    };
+
+    console.log(newProduct);
+
+    const product = await productSchema.findByIdAndUpdate(_id, newProduct, { new: true })
     res.status(200).json({
         product
     })

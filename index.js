@@ -42,7 +42,7 @@ connection()
 
 
 app.use(cors({ // CORS middleware konfigürasyonu
-    origin: ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app', 'http://localhost:3000'], // Alan adınızı değiştirin
+    origin: ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app', 'http://localhost:3001', 'http://localhost:3000'], // Alan adınızı değiştirin
     credentials: true // Gerekirse ekleyin
 }));
 
@@ -62,7 +62,7 @@ app.use(cors({ // CORS middleware konfigürasyonu
 // app.use(cors(corsOptions));
 
 
-
+// app.use(cors())
 app.use(morgan("dev"))
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ extended: false }))
