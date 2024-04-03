@@ -11,17 +11,9 @@ cloudinary.config({
 });
 
 const createProduct = asyncHandler(async (req, res) => {
-
     const { title, category, subCategory, description, price, image } = req.body;
-
-
     try {
-
-        // 
-        // Cloudinary'ye resmi yükle
         const result = await cloudinary.uploader.upload(image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
-
-        // MongoDB'ye ürünü kaydet
         const newProduct = await productSchema.create({
             title,
             category,
@@ -31,8 +23,6 @@ const createProduct = asyncHandler(async (req, res) => {
             image: result
         });
 
-
-
         res.json(newProduct);
     } catch (error) {
         console.error(error);
@@ -40,35 +30,42 @@ const createProduct = asyncHandler(async (req, res) => {
     }
 })
 
+
 const updatedProduct = asyncHandler(async (req, res) => {
-    const { title, category, subCategory, description, price } = req.body;
+    const { title, category, subCategory, description, price, image } = req.body;
     const { _id } = req.params
     validateMongoDBid(_id)
     // console.log(req.body.image);
-
-
-    const p = await productSchema.findOne({ _id })
-
-    await cloudinary.uploader.destroy(p.image.public_id);
-
-    const result = await cloudinary.uploader.upload(req.body.image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
-
-    // MongoDB'ye ürünü kaydet
-    const newProduct = {
-        title,
-        category,
-        subCategory,
-        description,
-        price,
-        image: result
-    };
-
-    console.log(newProduct);
-
-    const product = await productSchema.findByIdAndUpdate(_id, newProduct, { new: true })
-    res.status(200).json({
-        product
-    })
+    if (image.asset_id) {
+        const newProduct = {
+            title,
+            category,
+            subCategory,
+            description,
+            price,
+            image
+        };
+        const product = await productSchema.findByIdAndUpdate(_id, newProduct, { new: true })
+        res.status(200).json({
+            product
+        })
+    } else {
+        const p = await productSchema.findOne({ _id })
+        await cloudinary.uploader.destroy(p.image.public_id);
+        const result = await cloudinary.uploader.upload(req.body.image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
+        const newProduct = {
+            title,
+            category,
+            subCategory,
+            description,
+            price,
+            image: result
+        };
+        const product = await productSchema.findByIdAndUpdate(_id, newProduct, { new: true })
+        res.status(200).json({
+            product
+        })
+    }
 })
 
 const deleteProduct = asyncHandler(async (req, res) => {
@@ -77,6 +74,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
     validateMongoDBid(_id)
 
     const p = await productSchema.findById(_id)
+    // console.log("p:::", p)
+
     await productSchema.findByIdAndDelete(_id)
     await cloudinary.uploader.destroy(p.image.public_id);
     console.log("The product is deleted")

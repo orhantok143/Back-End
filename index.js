@@ -43,6 +43,9 @@ connection()
 
 app.use(cors({ // CORS middleware konfigürasyonu
     origin: ['https://flamingodb.netlify.app', 'https://flamingo-mn.netlify.app', 'http://localhost:3001', 'http://localhost:3000'], // Alan adınızı değiştirin
+    // allowedHeaders: ['Content-Type', 'Authorization'], // İzin verilen istek başlıkları
+    // exposedHeaders: ['X-Total-Count'], // Açıklanacak yanıt başlıkları
+
     credentials: true // Gerekirse ekleyin
 }));
 
