@@ -2,11 +2,10 @@ const userModel = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const validateMongoDBid = require("../utils/validateMongodbİd");
 const generateRefreshToken = require("../config/refreshtokengenerator");
-const { generateToken } = require("../config/generateToken.js");
-
 const jwt = require("jsonwebtoken");
 const sendMail = require("./emailCtrl.js");
 const crypto = require("crypto");
+
 
 const register = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -15,26 +14,33 @@ const register = asyncHandler(async (req, res) => {
     const user = await userModel.create(req.body);
     res.status(200).json({
       success: true,
+      message: "Başarıyla Kaydedildi",
       data: user,
     });
   } else {
-    throw new Error("User Already Exits");
+    throw new Error("Zaten bu E-mail'e kayıtlı bir kullanıcı var.");
   }
 });
 
+
+
+
+
+
 const login = asyncHandler(async (req, res) => {
-
-
   const { email, password } = req.body;
   // check if user exists or not
-  const findAdmin = await userModel.findOne({ email });
+
+  const findAdmin = await userModel.findOne({ email }).populate("password");
   if (!findAdmin) {
+    res.json({
+      success: false,
+      message: "Böyle bir kullancı yok"
+    })
     throw new Error("Kullanıcı bulunamadı");
   }
-  // let passmatch = await findAdmin.isPasswordMatched(password)
-  if (findAdmin.role !== "admin") throw new Error("Not Authorised");
-  if (findAdmin) {
-    // console.log("passmatch", password);
+  if (findAdmin.role !== "admin") throw new Error("Kullanıcı Admin değil.");
+  if (findAdmin && await findAdmin.isPasswordMatched(password)) {
     const refreshToken = generateRefreshToken(findAdmin?._id);
     const updateuser = await userModel.findByIdAndUpdate(
       findAdmin._id,
@@ -43,10 +49,6 @@ const login = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000,
-    });
     res.json({
       _id: findAdmin?._id,
       username: findAdmin?.username,
@@ -55,18 +57,22 @@ const login = asyncHandler(async (req, res) => {
       token: refreshToken,
     });
   } else {
-    throw new Error("Invalid Credentials");
+    res.json({
+      success: false,
+      message: "Böyle bir kullancı yok"
+    })
+    throw new Error("Girdiğiniz bilgiler yanlıştır. Lütfen başka bilgi kullanın.");
   }
 });
 
 const logout = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
-  console.log(cookie);
-  if (!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
-  const refreshToken = cookie.refreshToken;
+
+  if (!cookie?.loginUser) throw new Error("No Refresh Token in Cookies");
+  const refreshToken = cookie.loginUser;
   const user = await userModel.findOne({ refreshToken });
   if (!user) {
-    res.clearCookie("refreshToken", {
+    res.clearCookie("loginUser", {
       httpOnly: true,
       secure: true,
     });

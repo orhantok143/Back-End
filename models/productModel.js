@@ -24,10 +24,11 @@ var productSchema = new mongoose.Schema({
         required: true
     },
 
-    image: {
-        type: Object,
-        require: true
-    },
+    // image: {
+    //     type: Object,
+    //     require: true
+    // },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
 },
     {

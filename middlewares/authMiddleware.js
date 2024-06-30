@@ -1,33 +1,40 @@
 const expressAsyncHandler = require("express-async-handler");
-const jwt = require("jsonwebtoken")
 const userModel = require("../models/userModel")
 
+
+
+
 const authMiddleware = expressAsyncHandler(async (req, res, next) => {
-    let token;
-    if (req?.headers?.authorization?.startsWith("Bearer")) {
-        token = req.headers.authorization.split(" ")[1];
-        try {
-            if (token) {
-                const decoded = jwt.verify(token, process.env.SECRET)
-                const user = await userModel.findById(decoded.data)
-                req.user = user
-                next()
+    const { email, password } = req.body
+    const loginUser = await userModel.findOne({ email }).populate("password")
+    if (loginUser && (await loginUser.isPasswordMatched(password))) {
+        req.user = loginUser
+        res.cookie("loginUser", loginUser.refreshToken,
+            {
+                httpOnly: true,  // XSS saldırılarına karşı koruma
+                secure: true,
+                sameSite: 'strict' // CSRF saldırılarına karşı koruma
             }
-        } catch (error) {
-            throw new Error("Not Authorized token expaired, Please login again")
-        }
+        )
+        next()
     } else {
-        throw new Error("There is no token attached to header")
+        res.status(401).json({
+            sucsess: false,
+            message: "Girdiğiniz E-mail veya şifre yanlıştır."
+        })
+
     }
 })
 
+
 const isAdmin = expressAsyncHandler(async (req, res, next) => {
     const user = req.user
+    console.log("reqUser::", user);
     if (user) {
         if (user.role === "admin") {
             next()
         } else {
-            throw new Error("The Logined User is Not Admin")
+            throw new Error("Giriş yapan kullanıcı Admin değildir.")
         }
 
     } else {
@@ -36,9 +43,6 @@ const isAdmin = expressAsyncHandler(async (req, res, next) => {
 })
 
 
-const newCors = expressAsyncHandler((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://flamingodb.netlify.app');
-    next();
-});
 
-module.exports = { authMiddleware, isAdmin, newCors }
+
+module.exports = { authMiddleware, isAdmin }

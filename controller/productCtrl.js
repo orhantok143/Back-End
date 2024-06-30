@@ -1,6 +1,7 @@
 const productSchema = require("../models/productModel")
 const asyncHandler = require("express-async-handler")
-const validateMongoDBid = require("../utils/validateMongodbİd")
+const validateMongoDBid = require("../utils/validateMongodbİd");
+const connection = require("../Db/db");
 
 const cloudinary = require('cloudinary').v2;
 
@@ -13,14 +14,15 @@ cloudinary.config({
 const createProduct = asyncHandler(async (req, res) => {
     const { title, category, subCategory, description, price, image } = req.body;
     try {
-        const result = await cloudinary.uploader.upload(image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
+        const result = await cloudinary.uploader.upload(image)
         const newProduct = await productSchema.create({
             title,
             category,
             subCategory,
             description,
             price,
-            image: result
+            image: result,
+            // userId: req.user.data
         });
 
         res.json(newProduct);
@@ -52,7 +54,7 @@ const updatedProduct = asyncHandler(async (req, res) => {
     } else {
         const p = await productSchema.findOne({ _id })
         await cloudinary.uploader.destroy(p.image.public_id);
-        const result = await cloudinary.uploader.upload(req.body.image, { width: 612, height: 408, gravity: "auto", crop: "fill" });
+        const result = await cloudinary.uploader.upload(req.body.image);
         const newProduct = {
             title,
             category,
@@ -88,7 +90,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
 const getAllProducts = asyncHandler(async (req, res) => {
     const product = await productSchema.find()
     res.status(200).json({
-
         product
     })
 })
